@@ -1,23 +1,26 @@
-version: 2.1
-orbs:
-  node: circleci/node@1.1
-jobs:
-  build:
-    docker:
-      - image: circleci/node:1
-    # 指定要运行的代码分支
-    branches:
-      only:
-        - master
-    steps:
-      - add_ssh_keys:
-          fingerprings:
-            - "24:f9:7c:3c:dd:40:97:a0:51:d7:af:cc:a1:bb:52:8f"
-      # 拉取分支的代码
-      - checkout
-      - run:
-        name: Install
-        command: yarn install
-      - run:
-        name: Build
-        command: yarn build
+workflows:
+  version: 2.1
+  nightly:
+    triggers:
+      - schedule:
+          filters:
+            # 指定要运行的代码分支
+            branches:
+              only:
+                - master
+  jobs:
+    build:
+      docker:
+        - image: circleci/node:latest
+      steps:
+        - add_ssh_keys:
+            fingerprings:
+              - "24:f9:7c:3c:dd:40:97:a0:51:d7:af:cc:a1:bb:52:8f"
+        # 拉取分支的代码
+        - checkout
+        - run:
+            name: Install
+            command: yarn install
+        - run:
+            name: Build
+            command: yarn build
