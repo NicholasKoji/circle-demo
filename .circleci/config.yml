@@ -22,16 +22,11 @@ workflows:
   version: 2
   # 工作流的名称，不可重复
   build:
-    # 触发器。推送到分支时触发工作流
-    triggers:
-      - schedule:
-          # 每日凌晨自动运行
-          cron: "0 0 * * *"
+    jobs:
+      # 运行配置中定义的作业名称
+      - build:
           filters:
             # 指定要运行的代码分支
             branches:
               only:
                 - master
-    jobs:
-      # 运行配置中定义的作业名称
-      - build
