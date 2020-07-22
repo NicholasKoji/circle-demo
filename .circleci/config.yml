@@ -12,12 +12,28 @@ jobs:
             - "24:f9:7c:3c:dd:40:97:a0:51:d7:af:cc:a1:bb:52:8f"
       # 拉取分支的代码
       - checkout
+      # 使用缓存，位置需要在保存缓存之前
+      - restore_cache:
+          key: dependencies
       - run:
           name: Install
           command: yarn install
+      # 保存缓存，配置要保存的目录，定义唯一标识
+      - save_cache:
+          paths:
+            - node_module
+          key: dependencies
       - run:
           name: Build
           command: yarn build
+      - run:
+          name: Prepare shell commands
+          # shell chmod +x 赋予执行权限
+          command: chmod +x scripts/deploy.sh
+      - run:
+          name: Run deploy to Github pages
+          # 执行shell脚本
+          command: ./scripts/deploy.sh
 workflows:
   version: 2
   # 工作流的名称，不可重复
