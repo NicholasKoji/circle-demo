@@ -1,9 +1,12 @@
-version: 2.1
+version: 2
 jobs:
+  # 设置作业的名称，不可重复
   build:
     docker:
       - image: circleci/node:latest
+    # 配置运行的命令
     steps:
+      # 把项目设置的SSH密钥添加到容器
       - add_ssh_keys:
           fingerprings:
             - "24:f9:7c:3c:dd:40:97:a0:51:d7:af:cc:a1:bb:52:8f"
@@ -16,11 +19,19 @@ jobs:
           name: Build
           command: yarn build
 workflows:
-  nightly:
+  version: 2
+  # 工作流的名称，不可重复
+  build:
+    # 触发器。推送到分支时触发工作流
     triggers:
       - schedule:
+          # 每日凌晨自动运行
+          cron: "0 0 * * *"
           filters:
             # 指定要运行的代码分支
             branches:
               only:
                 - master
+    jobs:
+      # 运行配置中定义的作业名称
+      - build
